@@ -9,8 +9,8 @@ public class Calculator {
     public static void main(String[] args) {
 
         Converter converter = new Converter();
-        String[] actions = {"+", "-", "/", "*"};
-        String[] regexActions = {"\\+", "-", "/", "\\*"};
+        String[] ACTIONS = {"+", "-", "/", "*"};
+        String[] REGEX_ACTIONS = {"\\+", "-", "/", "\\*"};
         Scanner scn = new Scanner(System.in);
 
         while (true) {
@@ -24,8 +24,8 @@ public class Calculator {
             try {
                 int a, b;
                 int actionIndex = -1;
-                for (int i = 0; i < actions.length; i++) {
-                    if (exp.contains(actions[i])) {
+                for (int i = 0; i < ACTIONS.length; i++) {
+                    if (exp.contains(ACTIONS[i])) {
                         actionIndex = i;
                         break;
                     }
@@ -34,7 +34,7 @@ public class Calculator {
                     throw new IncorrectExpressionException(exp);
                 }
 
-                String[] data = exp.split(regexActions[actionIndex]);
+                String[] data = exp.split(REGEX_ACTIONS[actionIndex]);
 
                 if (data.length != 2) {
                     throw new IncorrectNumbersCountException(exp);
@@ -50,11 +50,15 @@ public class Calculator {
                         b = Integer.parseInt(data[1]);
                     }
 
-                    if (actions[actionIndex].equals("/") && b == 0) {
+                    if (a > 10 || b > 10) {
+                        throw new OutOfLimitException(exp);
+                    }
+
+                    if (ACTIONS[actionIndex].equals("/") && b == 0) {
                         throw new DivisionByZeroException(exp);
                     }
 
-                    int result = switch (actions[actionIndex]) {
+                    int result = switch (ACTIONS[actionIndex]) {
                         case "+" -> a + b;
                         case "-" -> a - b;
                         case "*" -> a * b;
@@ -72,7 +76,9 @@ public class Calculator {
                 } else {
                     throw new FormatMismatchException(exp);
                 }
-            } catch (IncorrectExpressionException | FormatMismatchException | DivisionByZeroException | NegativeRomanNumberException | IncorrectNumbersCountException ex) {
+            } catch (IncorrectExpressionException
+                     | FormatMismatchException | DivisionByZeroException
+                     | NegativeRomanNumberException | IncorrectNumbersCountException | OutOfLimitException ex) {
                 System.out.println(ex.getMessage());
             } catch (Exception ex) {
                 System.out.println("An unexpected error occurred: " + ex.getMessage());
